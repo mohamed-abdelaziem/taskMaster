@@ -1,0 +1,509 @@
+<!-- header of page -->
+<div class="flex flex-wrap items-center md:flex-row justify-between mb-5">
+  <h1 class="font-bold text-[30px] text-slate-900">Task List :</h1>
+  <button
+    (click)="onOpenModel()"
+    class="md:block hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold hover:opacity-90 transition duration-500"
+  >
+    Add Task
+  </button>
+</div>
+
+<!-- create task Modal -->
+<div
+  #createTaskModel
+  class="fixed  overflow-auto hidden inset-0 duration-500 transition-all z-10000 bg-black/80 items-center justify-center h-screen"
+>
+  <form
+    (submit)="createTask()"
+    [formGroup]="createTaskForm"
+    class="bg-white w-[90%] md:w-[70%] rounded-2xl shadow-lg p-4 space-y-2"
+  >
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-slate-900 text-center">Create New Task</h2>
+
+    <!-- Task Name -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Task Name </label>
+      <input
+        type="text"
+        name="taskName"
+        formControlName="taskName"
+        required
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+        placeholder="Enter task name"
+      />
+      @if (createTaskForm.get('taskName')?.errors && createTaskForm.get('taskName')?.touched) {
+        @if (createTaskForm.get('taskName')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Task Name Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (createTaskForm.get('taskName')?.getError('minlength')) {
+          <div
+            class="flex items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Task Name must be at least 3 chars</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Description </label>
+      <textarea
+        name="description"
+        formControlName="description"
+        rows="3"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+        placeholder="Task description"
+      ></textarea>
+      @if (
+        createTaskForm.get('description')?.errors && createTaskForm.get('description')?.touched
+      ) {
+        @if (createTaskForm.get('description')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">description Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (createTaskForm.get('description')?.getError('minlength')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">description must be at least 3 chars</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Frequency -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Frequency </label>
+      <select
+        formControlName="frequency"
+        name="frequency"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      >
+        <option hidden>Select frequency</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+      </select>
+
+      @if (createTaskForm.get('frequency')?.errors && createTaskForm.get('frequency')?.touched) {
+        @if (createTaskForm.get('frequency')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">frequency Is Required</p>
+            </div>
+          </div>
+        }
+        @if (createTaskForm.get('frequency')?.getError('pattern')) {
+          <div
+            class="flex items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">frequency Must be Monthly or Weekly or Daily</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- date -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Due Date </label>
+      <input
+        type="date"
+        formControlName="dueDate"
+        name="dueDate"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      />
+      @if (createTaskForm.get('dueDate')?.errors && createTaskForm.get('dueDate')?.touched) {
+        @if (createTaskForm.get('dueDate')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Due Date Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (createTaskForm.errors) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Please Enter Valid Due Date</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      [disabled]="createTaskForm.invalid"
+      class="w-full cursor-pointer bg-slate-900 text-white py-3 rounded-xl font-semibold hover:bg-slate-800 transition"
+    >
+      @if (isLoadingCreateTask()) {
+        Loading...
+      } @else {
+        Save Task
+      }
+    </button>
+    <button
+      (click)="onCloseModel()"
+      type="button"
+      class="w-full cursor-pointer bg-gray-200 text-slate-800 py-3 rounded-xl font-semibold hover:bg-slate-900 hover:text-white transition"
+    >
+      Cancel
+    </button>
+  </form>
+</div>
+<!-- end model -->
+
+<!-- loading screen -->
+@if (isLoadingOfGetAllTasks()) {
+  <app-global-loading></app-global-loading>
+} @else {
+  @if (taskList.length == 0) {
+    <h1 class="text-red-500 text-[30px] font-semibold text-center">Not Found Tasks</h1>
+  } @else {
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+      @for (item of taskList; track $index) {
+        <!-- task card -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 space-y-6 transition-all duration-500 cursor-pointer hover:-translate-y-1.5">
+          <!-- Header -->
+          <div class="flex flex-wrap gap-2 justify-between items-center border-b pb-4">
+            <h2 class="text-2xl font-bold text-slate-900">
+              <i class="fa-solid fa-list-check mr-2"></i>
+              Task Details
+            </h2>
+
+            <span
+              [class]="{ 'bg-green-600': item?.isCompleted, 'bg-yellow-500': !item?.isCompleted }"
+              class="px-4 py-1 rounded-full text-white text-sm font-semibold"
+            >
+              {{ item?.isCompleted ? 'Completed' : 'Not Completed' }}
+            </span>
+          </div>
+
+          <!-- Task Info Grid -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-sm text-slate-500">Task Name</p>
+              <p class="font-semibold text-lg text-slate-900">{{ item?.taskName }}</p>
+            </div>
+
+            <div>
+              <p class="text-sm text-slate-500">Frequency</p>
+              <p class="font-semibold text-slate-800">
+                <i class="fa-solid fa-repeat mr-1"></i>
+                {{ item?.frequency }}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-sm text-slate-500">Created Date</p>
+              <p class="text-slate-800">
+                <i class="fa-solid fa-calendar mr-1"></i>
+                {{ item?.createdDate | date: 'short' }}
+              </p>
+            </div>
+
+            <!-- <div>
+      <p class="text-sm text-slate-500">Start Date</p>
+      <p class="text-slate-800">{{item?.}}</p>
+    </div> -->
+
+            <div>
+              <p class="text-sm text-slate-500">Due Date</p>
+              <p class="text-slate-800">{{ item?.dueDate | date: 'short' }}</p>
+            </div>
+
+            <div class="flex flex-col items-start justify-start w-full">
+              <p class="text-sm text-slate-500">
+                <span class="text-slate-900">UserId</span> : {{ item?.userId }}
+              </p>
+              <p class="text-sm text-slate-500">
+                <span class="text-slate-900">TaskId</span>: {{ item?.taskId }}
+              </p>
+            </div>
+
+            <!-- <button (click)="logOut()"  class="md:block hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold hover:opacity-90 transition duration-500">
+        Log Out
+      </button> -->
+          </div>
+          <div class="btns flex-wrap flex items-center gap-2">
+            <button
+             (click)="setToUpdate(item.taskId , item)"
+              class="md:block border bg-yellow-500 text-white px-4 py-2 cursor-pointer rounded-lg font-semibold hover:bg-yellow-600 transition duration-500"
+            >
+              Update Task
+            </button>
+            <button
+              (click)="deleteTask(item.taskId)"
+              class="md:block disabled:opacity-80 border bg-red-500 text-white px-4 py-2 cursor-pointer rounded-lg font-semibold hover:bg-red-600 transition duration-500"
+            >
+             Delete Task
+            </button>
+
+               <button
+              [routerLink]="['/dashboard/task-details',item?.taskId]"
+              class="md:block disabled:opacity-80 border bg-slate-800 text-white w-10 h-10 rounded-full cursor-pointer  font-semibold hover:bg-slate-900 transition duration-500"
+            >
+            <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+}
+
+<!-- update task Modal -->
+<div #updateTaskModal class="fixed  overflow-auto hidden inset-0 duration-500 transition-all z-10000 bg-black/80 items-center justify-center h-screen">
+  <form
+  (submit)="updateTask()"
+    [formGroup]="updateTaskForm"
+    class="bg-white w-[90%] md:w-[70%] rounded-2xl shadow-lg p-4 space-y-2"
+  >
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-slate-900 text-center">Update New Task</h2>
+
+    <!-- Task Name -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Task Name </label>
+      <input
+        type="text"
+        name="taskName"
+        formControlName="taskName"
+        required
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+        placeholder="Enter task name"
+      />
+      @if (updateTaskForm.get('taskName')?.errors && updateTaskForm.get('taskName')?.touched) {
+        @if (updateTaskForm.get('taskName')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Task Name Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (updateTaskForm.get('taskName')?.getError('minlength')) {
+          <div
+            class="flex items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Task Name must be at least 3 chars</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Description </label>
+      <textarea
+        name="description"
+        formControlName="description"
+        rows="3"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+        placeholder="Task description"
+      ></textarea>
+      @if (
+        updateTaskForm.get('description')?.errors && updateTaskForm.get('description')?.touched
+      )
+       {
+        
+        @if (updateTaskForm.get('description')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">description Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (updateTaskForm.get('description')?.getError('minlength')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">description must be at least 3 chars</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Frequency -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Frequency </label>
+      <select
+        formControlName="frequency"
+        name="frequency"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      >
+        <option hidden>Select frequency</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+      </select>
+
+      @if (updateTaskForm.get('frequency')?.errors && updateTaskForm.get('frequency')?.touched) {
+        @if (updateTaskForm.get('frequency')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">frequency Is Required</p>
+            </div>
+          </div>
+        }
+        @if (updateTaskForm.get('frequency')?.getError('pattern')) {
+          <div
+            class="flex items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">frequency Must be Monthly or Weekly or Daily</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- date -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700"> Due Date </label>
+      <input
+        type="date"
+        formControlName="dueDate"
+        name="dueDate"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      />
+      @if (updateTaskForm.get('dueDate')?.errors && updateTaskForm.get('dueDate')?.touched) {
+        @if (updateTaskForm.get('dueDate')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Due Date Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (updateTaskForm.errors) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Please Enter Valid Due Date</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+
+    <!-- isCompleted -->
+   <div class="flex gap-2  items-center mb-4">
+     <label for="default-checkbox" class="block  font-medium text-slate-700">Is Completed : </label>
+    <input id="default-checkbox" name="isCompleted" formControlName="isCompleted"  type="checkbox"  class="w-4 h-4 border border-default-medium rounded-xl bg-neutral-secondary-medium  focus:ring-0 cursor-pointer">
+</div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      [disabled]="updateTaskForm.invalid"
+      class="w-full cursor-pointer bg-slate-900 text-white py-3 rounded-xl font-semibold hover:bg-slate-800 transition"
+    >
+      @if (updateLoading()) {
+        Loading...
+      } @else {
+        Update Task
+      }
+    </button>
+    <button
+      (click)="closeUpdateModel()"
+      type="button"
+      class="w-full cursor-pointer bg-gray-200 text-slate-800 py-3 rounded-xl font-semibold hover:bg-slate-900 hover:text-white transition"
+    >
+      Cancel
+    </button>
+  </form>
+</div>
+<!-- end model -->

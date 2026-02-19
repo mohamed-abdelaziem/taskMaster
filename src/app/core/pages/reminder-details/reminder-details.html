@@ -1,0 +1,285 @@
+<!-- reminders card -->
+@if (getReminderLoading()) {
+  <app-global-loading></app-global-loading>
+} @else {
+    @if (reminder() == null) {
+            <h1 class="text-red-500 text-[30px] font-semibold text-center">Not Found Data</h1>
+    }@else {
+
+         <div
+      class="bg-white rounded-2xl shadow-lg p-8 space-y-6 transition-all duration-500 cursor-pointer hover:-translate-y-1.5"
+    >
+      <!-- Header -->
+      <div class="flex flex-wrap gap-2 justify-between items-center border-b pb-4">
+        <h2 class="text-2xl font-bold text-slate-900">
+          <i class="fa-solid fa-bell mr-2 text-slate-800"></i>
+          Reminder Details
+        </h2>
+
+        <span
+          [class]="reminder()?.isAcknowledged  ?'bg-green-600' : 'bg-yellow-500'"
+          class="px-4 py-1 rounded-full text-white text-sm font-semibold"
+        >
+          {{ reminder()?.isAcknowledged ? 'Acknowledged' : 'Pending' }}
+        </span>
+      </div>
+
+      <!-- Reminder Info Grid -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Title -->
+        <div>
+          <p class="text-sm text-slate-500">Title</p>
+          <p class="font-semibold text-lg text-slate-900">
+            {{ reminder()?.title }}
+          </p>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <p class="text-sm text-slate-500">Description</p>
+          <p class="font-semibold text-lg text-slate-900">
+            {{ reminder()?.description }}
+          </p>
+        </div>
+
+        <!-- Reminder Date -->
+        <div>
+          <p class="text-sm text-slate-500">Reminder Date</p>
+          <p class="text-slate-800">
+            <i class="fa-solid fa-clock mr-1 text-slate-700"></i>
+            {{ reminder()?.reminderDateTime | date: 'short' }}
+          </p>
+        </div>
+
+        <!-- User Info -->
+        <div class="flex flex-col items-start justify-start w-full">
+          <p class="text-sm text-slate-500">
+            <span class="text-slate-900">UserId</span> :
+            {{ reminder()?.userId }}
+          </p>
+          <p class="text-sm text-slate-500">
+            <span class="text-slate-900">ReminderId</span> :
+            {{ reminder()?.reminderId }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btns flex-wrap flex items-center gap-2">
+        <button
+        (click)="setToUpdate(reminder()?.reminderId,reminder())"
+          class="border bg-yellow-500 text-white px-4 py-2 cursor-pointer rounded-lg font-semibold hover:bg-yellow-600 transition duration-500"
+        >
+          Update Reminder
+        </button>
+
+        <button
+        (click)="deleteReminder(reminder()?.reminderId!)"
+          class="border bg-red-500 text-white px-4 py-2 cursor-pointer rounded-lg font-semibold hover:bg-red-600 transition duration-500"
+        >
+          Delete Reminder
+        </button>
+        
+      </div>
+    </div>
+    
+}
+
+    }
+
+<!-- end reminders card -->
+
+
+
+
+<!-- update reminders model -->
+<div
+  #updateReminderModal
+  class="fixed overflow-auto hidden inset-0 duration-500 transition-all z-10000 bg-black/80 items-center justify-center h-screen"
+>
+  <form
+    (submit)="updateReminders()"
+    [formGroup]="updateRemindersForm"
+    class="bg-white w-[90%] md:w-[70%] rounded-2xl shadow-lg p-6 space-y-4"
+  >
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-slate-900 text-center">update Reminder</h2>
+
+    <!-- Reminder Title -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700">Title</label>
+      <input
+        type="text"
+        name="title"
+        formControlName="title"
+        placeholder="Enter reminder title"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      />
+
+      @if (updateRemindersForm.get('title')?.errors && updateRemindersForm.get('title')?.touched) {
+        @if (updateRemindersForm.get('title')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Reminders Title Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (updateRemindersForm.get('title')?.getError('minlength')) {
+          <div
+            class="flex items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Reminders Title must be at least 3 chars</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700">Description</label>
+      <textarea
+        name="description"
+        formControlName="description"
+        rows="3"
+        placeholder="Enter reminder description"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      ></textarea>
+
+      @if (
+        updateRemindersForm.get('description')?.errors &&
+        updateRemindersForm.get('description')?.touched
+      ) {
+        @if (updateRemindersForm.get('description')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Reminders Description Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (updateRemindersForm.get('description')?.getError('minlength')) {
+          <div
+            class="flex items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Reminders Description must be at least 3 chars</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Reminder DateTime -->
+    <div>
+      <label class="block mb-2 font-medium text-slate-700">Reminder Date & Time</label>
+      <input
+        type="datetime-local"
+        name="reminderDateTime"
+        formControlName="reminderDateTime"
+        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
+      />
+      @if (
+        updateRemindersForm.get('reminderDateTime')?.errors &&
+        updateRemindersForm.get('reminderDateTime')?.touched
+      ) {
+        @if (updateRemindersForm.get('reminderDateTime')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Reminder Date Time Is Required</p>
+            </div>
+          </div>
+        }
+
+        @if (updateRemindersForm.errors) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">The Date Must Be In future</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- isAcknowledged -->
+    <div class="flex gap-2 items-center mb-4">
+      <label for="acknowledged-checkbox" class="block font-medium text-slate-700">
+        Acknowledged
+      </label>
+      <input
+        id="acknowledged-checkbox"
+        type="checkbox"
+        formControlName="isAcknowledged"
+        class="w-4 h-4 border border-slate-300 rounded-xl bg-neutral-secondary-medium focus:ring-0 cursor-pointer"
+      />
+
+      @if (
+        updateRemindersForm.get('isAcknowledged')?.errors &&
+        updateRemindersForm.get('isAcknowledged')?.touched
+      ) {
+        @if (updateRemindersForm.get('isAcknowledged')?.getError('required')) {
+          <div
+            class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
+          >
+            <i class="fa-solid fa-triangle-exclamation text-xl mt-1"></i>
+
+            <div>
+              <h4 class="font-semibold">Error</h4>
+              <p class="text-sm">Acknowledged Is Required</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Buttons -->
+    <button
+      type="submit"
+      class="cursor-pointer w-full bg-slate-900 text-white py-3 rounded-xl font-semibold hover:bg-slate-800 transition"
+    >
+      @if (updateRemindersLoading()) {
+        Loading
+      } @else {
+        Update Reminder
+      }
+    </button>
+    <button
+      type="button"
+      (click)="onCloseUpdateModel()"
+      class="cursor-pointer w-full bg-gray-200 text-slate-800 py-3 rounded-xl font-semibold hover:bg-slate-900 hover:text-white transition"
+    >
+      Cancel
+    </button>
+  </form>
+</div>
+<!-- end modal -->
+
+<!-- end update reminders model -->

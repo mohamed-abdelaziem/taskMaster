@@ -1,0 +1,115 @@
+<!-- header of page -->
+<div class="flex flex-wrap items-center md:flex-row justify-between mb-5">
+  <h1 class="font-bold text-[30px] text-slate-900">Goal List :</h1>
+
+  <button
+    routerLink="/dashboard/new-goal"
+    class="hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold transition duration-500"
+  >
+    Add Goal
+  </button>
+</div>
+<!-- end of header -->
+
+
+
+<!-- start card of goal -->
+@if (getGoalsLoading() || deleteGoalLoading()) {
+  <app-global-loading></app-global-loading>
+}@else {
+  @if (goalList.length == 0) {
+        <h1 class="text-red-500 text-[30px] font-semibold text-center">Not Found Goals</h1>
+  }@else {
+    <div class="grid lg:grid-cols-2 gap-2">
+    @for (item of goalList; track $index) {
+      <div
+  class="bg-white rounded-2xl shadow-lg p-8 space-y-6 transition-all duration-500 hover:-translate-y-1.5"
+>
+
+  <!-- Header -->
+  <div class="flex justify-between items-center border-b pb-4">
+    <h2 class="text-2xl font-bold text-slate-900">
+      <i class="fa-solid fa-bullseye mr-2 text-slate-800"></i>
+      {{ item?.goalName }}
+    </h2>
+
+    <span
+      [class]="item?.isAchieved ? 'bg-green-600' : 'bg-slate-800'"
+      class="px-4 py-1 rounded-full text-white text-sm font-semibold"
+    >
+      {{ item?.isAchieved ? 'Achieved' : 'In Progress' }}
+    </span>
+  </div>
+
+  <!-- Goal Info -->
+  <div class="grid md:grid-cols-2 gap-6">
+
+    <div>
+      <p class="text-sm text-slate-500">Description</p>
+      <p class="font-semibold text-slate-900 line-clamp-1">
+        {{ item?.description }}
+      </p>
+    </div>
+
+    <div>
+      <p class="text-sm text-slate-500">Start Date</p>
+      <p class="text-slate-800">
+        {{ item?.startDate | date:'short' }}
+      </p>
+    </div>
+
+    <div>
+      <p class="text-sm text-slate-500">End Date</p>
+      <p class="text-slate-800">
+        {{ item?.endDate | date:'short' }}
+      </p>
+    </div>
+
+    <div>
+      <p class="text-sm text-slate-500">
+        <span class="text-slate-900">GoalId</span> :
+        {{ item?.goalId }}
+      </p>
+    </div>
+
+  </div>
+
+
+
+  <!-- Buttons -->
+  <div class="flex flex-wrap gap-2 pt-4 border-t">
+
+    <button
+      [routerLink]='[`/dashboard/update-goal/${item?.goalId}`]'
+      class="cursor-pointer border bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition"
+    >
+      Update Goal
+    </button>
+
+    <button
+      (click)="deleteGoal(item?.goalId!)"
+      class="cursor-pointer border bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition"
+    >
+      Delete Goal
+    </button>
+
+    
+
+  </div>
+
+</div>
+
+    }
+    </div>
+  }
+
+
+
+}
+<!-- end card of goal -->
+
+
+
+
+
+

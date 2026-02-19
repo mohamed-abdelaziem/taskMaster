@@ -1,0 +1,43 @@
+
+
+ <!-- ================= NAVBAR ================= -->
+  <nav class="sticky top-0 left-0 w-full bg-white/90 backdrop-blur border-b border-slate-200 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <!-- Logo -->
+      <div routerLink="" class=" flex items-center gap-2 font-bold text-xl cursor-pointer">
+        <i class="fa-solid fa-list-check text-slate-900"></i>
+        <span>Taskmaster</span>
+      </div>
+
+      <!-- Links -->
+      <div #linksContainer class="transition-all duration-500 flex left-[-1000%] right-0 p-4 md:static   md:p-0 absolute w-full z-50 top-full bg-gray-100 md:bg-transparent md:w-fit   md:flex md:flex-row flex-col md:items-center gap-8 font-medium text-slate-700">
+        <a href="#home" class="hover:text-slate-900 transition">Home</a>
+        <a href="#feature" class="hover:text-slate-900 transition">Features</a>
+        <a href="#benefit" class="hover:text-slate-900 transition">Benefits</a>
+        <a href="#about" class="hover:text-slate-900 transition">About</a>
+        <div class="flex md:hidden items-center md:justify-center gap-2">
+        <button  routerLink="/home/login" class="md:block hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold hover:opacity-90 transition duration-500">
+        Login
+      </button>
+        <button  routerLink="/home/register"  class="cursor-pointer md:block bg-transparent  text-slate-900 px-6 py-2 hover:bg-slate-900 hover:text-white  duration-500 rounded-lg font-semibold hover:opacity-90 transition  border border-slate-900">
+        Sign Up
+      </button>
+      </div>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="flex items-center justify-center gap-2">
+        <button  routerLink="/home/login" class="hidden  md:block hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold hover:opacity-90 transition duration-500">
+        Login
+      </button>
+        <button  routerLink="/home/register"  class="hidden cursor-pointer md:block bg-transparent  text-slate-900 px-6 py-2 hover:bg-slate-900 hover:text-white  duration-500 rounded-lg font-semibold hover:opacity-90 transition border border-slate-900">
+        Sign Up
+      </button>
+      </div>
+
+      <!-- Mobile Icon -->
+      <button (click)="toggleNav()" class="md:hidden text-2xl cursor-pointer">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>

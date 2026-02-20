@@ -17,13 +17,7 @@ export class App {
   private cookie = inject(CookieService);
 
 
-  constructor(){
-    if(this.cookie.get('userData') || this.authService.isLogged()){
-      this.router.navigateByUrl('/dashboard');
-    }else{
-      this.router.navigateByUrl('/home');
-    }
-  }
+  
 
   protected readonly title = signal('taskMaster');
 }

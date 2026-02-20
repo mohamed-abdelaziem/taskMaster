@@ -4,7 +4,13 @@ import { authenticationGuard } from './core/guards/authentication-guard';
 export const routes: Routes = [
 
   {
-    path: '',
+    path : "",
+    redirectTo : "/home",
+    pathMatch : "full"
+  }
+  ,
+  {
+    path: 'home',
     loadComponent: () =>
       import('./core/layout/not-logged-user/not-logged-user').then((f) => f.NotLoggedUser),
     title: 'Home',

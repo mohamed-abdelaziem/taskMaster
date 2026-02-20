@@ -5,9 +5,10 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { isPlatformBrowser } from '@angular/common';
+import { NavbarNotLoggedUser } from "../../components/navbar-not-logged-user/navbar-not-logged-user";
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule, NavbarNotLoggedUser],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

@@ -4,10 +4,11 @@ import { Auth } from '../../services/auth';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { NavbarNotLoggedUser } from "../../components/navbar-not-logged-user/navbar-not-logged-user";
 
 @Component({
 selector: 'app-register',
-imports: [FormsModule,ReactiveFormsModule],
+imports: [FormsModule, ReactiveFormsModule, NavbarNotLoggedUser],
 templateUrl: './register.html',
 styleUrl: './register.css',
 })

@@ -5,6 +5,6 @@ export const serverRoutes: ServerRoute[] = [
  
    {
     path: '**', // أي حاجة تانية تروح لل Angular app
-    renderMode: RenderMode.Server
+    renderMode: RenderMode.Server,
   }
 ];

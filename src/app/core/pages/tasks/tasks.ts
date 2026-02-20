@@ -13,7 +13,6 @@ import { ToastrService } from 'ngx-toastr';
 import { ITask } from '../../interfaces/task';
 import { GlobalLoading } from '../../components/global-loading/global-loading';
 import { RouterLink } from "@angular/router";
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -22,54 +21,62 @@ import { finalize } from 'rxjs';
   styleUrl: './tasks.css',
 })
 export class Tasks implements OnInit {
-
   private taskService = inject(Task);
   private authService = inject(Auth);
   private toast = inject(ToastrService);
-  // todayDate = new Date().toISOString().split('T')[0];
-
   isLoadingCreateTask = signal<boolean>(false);
   taskList: ITask[] = [];
   isLoadingOfGetAllTasks = signal<boolean>(false);
   deleteLoading = signal<boolean>(false);
   existId = signal<number>(0);
   updateableId = signal<number>(0);
+  @ViewChild('createTaskModel')
+  createTaskModel!: ElementRef;
   updateLoading = signal<boolean>(false);
 
-  @ViewChild('createTaskModel') createTaskModel!: ElementRef;
-  @ViewChild('updateTaskModal') updateTaskModal!: ElementRef;
+  @ViewChild('updateTaskModal')
+  updateTaskModal!: ElementRef;
 
-  // 🔹 Factory Method لتجنب التكرار
-  private buildTaskForm() {
-    return new FormGroup(
-      {
-        taskId: new FormControl(0),
-        taskName: new FormControl('', [Validators.minLength(3), Validators.required]),
-        description: new FormControl('', [Validators.minLength(3), Validators.required]),
-        frequency: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^(Daily|Weekly|Monthly)$/),
-        ]),
-        createdDate: new FormControl(new Date()),
-        startDate: new FormControl(new Date()),
-        dueDate: new FormControl('', [Validators.required]),
-        isCompleted: new FormControl(false),
-        userId: new FormControl(Number(this.authService.userId())),
-      },
-      { validators: [this.validtionOnCreateTaskForm] }
-    );
-  }
+  createTaskForm = new FormGroup(
+    {
+      taskId: new FormControl(0),
+      taskName: new FormControl('', [Validators.minLength(3), Validators.required]),
+      description: new FormControl('', [Validators.minLength(3), Validators.required]),
+      frequency: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(Daily|Weekly|Monthly)$/),
+      ]),
+      createdDate: new FormControl(new Date()),
+      startDate: new FormControl(new Date()),
+      dueDate: new FormControl('', [Validators.required]),
+      isCompleted: new FormControl(false),
+      userId: new FormControl(Number(this.authService.userId())),
+    },
+    { validators: [this.validtionOnCreateTaskForm] },
+  );
 
-  createTaskForm = this.buildTaskForm();
-  updateTaskForm = this.buildTaskForm();
+  updateTaskForm = new FormGroup(
+    {
+      taskId: new FormControl(this.updateableId()),
+      taskName: new FormControl('', [Validators.minLength(3), Validators.required]),
+      description: new FormControl('', [Validators.minLength(3), Validators.required]),
+      frequency: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(Daily|Weekly|Monthly)$/),
+      ]),
+      createdDate: new FormControl(new Date()),
+      startDate: new FormControl(new Date()),
+      dueDate: new FormControl('', [Validators.required]),
+      isCompleted: new FormControl(false),
+      userId: new FormControl(Number(this.authService.userId())),
+    }, { validators: [this.validtionOnCreateTaskForm] });
 
-  // 🔹 Validation محسنة
   validtionOnCreateTaskForm(group: AbstractControl) {
     const start = group.get('startDate')?.value;
     const due = group.get('dueDate')?.value;
 
-    if (start && due && new Date(due) < new Date(start)) {
-      group.get('dueDate')?.setErrors({ invalidDateRange: true });
+    if (new Date(due) < new Date(start)) {
+      group.get('dueDate')?.setErrors(['The Due Date Must Be in Future']);
       return { invalidDateRange: true };
     }
 
@@ -80,127 +87,100 @@ export class Tasks implements OnInit {
     this.getAllTasksByUserId();
   }
 
-  // =============================
-  // CREATE
-  // =============================
-
   createTask() {
+    
     if (this.createTaskForm.invalid) {
       this.createTaskForm.markAllAsTouched();
       return;
     }
-
     this.isLoadingCreateTask.set(true);
-
-    this.taskService.createTask(this.createTaskForm.value)
-      .pipe(finalize(() => this.isLoadingCreateTask.set(false)))
-      .subscribe({
-        next: () => {
-          this.toast.success('Task Created Successfully');
-          this.getAllTasksByUserId();
-          this.createTaskForm = this.buildTaskForm();
-          this.onCloseModel();
-        },
-        error: () => {
-          this.toast.error(`Can't Create A Task`);
-        },
-      });
+    this.taskService.createTask(this.createTaskForm.value).subscribe({
+      next: (res) => {
+        this.toast.success('Task Created Successfully');
+        this.isLoadingCreateTask.set(false);
+        this.getAllTasksByUserId();
+        this.createTaskForm.reset();
+        this.onCloseModel()
+      },
+      error: (err) => {
+        this.toast.error(`Can't Create A Task`);
+        this.isLoadingCreateTask.set(false);
+        this.createTaskForm.reset();
+        this.onCloseModel()
+      },
+    });
   }
 
   onOpenModel() {
-    this.toggleModal(this.createTaskModel, true);
+    (this.createTaskModel.nativeElement as HTMLElement).classList.remove('hidden');
+    (this.createTaskModel.nativeElement as HTMLElement).classList.add('flex');
   }
 
   onCloseModel() {
-    this.toggleModal(this.createTaskModel, false);
+    (this.createTaskModel.nativeElement as HTMLElement).classList.remove('flex');
+    (this.createTaskModel.nativeElement as HTMLElement).classList.add('hidden');
   }
-
-  // =============================
-  // GET
-  // =============================
 
   getAllTasksByUserId() {
     this.isLoadingOfGetAllTasks.set(true);
-
-    this.taskService.getAllTasks(this.authService.userId())
-      .pipe(finalize(() => this.isLoadingOfGetAllTasks.set(false)))
-      .subscribe({
-        next: (res) => this.taskList = res,
-        error: () => this.toast.error('Failed To Load Tasks'),
-      });
+    this.taskService.getAllTasks(this.authService.userId()).subscribe({
+      next: (res) => {
+        this.isLoadingOfGetAllTasks.set(false);
+        this.taskList = res;
+      },
+      error: (err) => {
+        this.isLoadingOfGetAllTasks.set(false);
+      },
+    });
   }
-
-  // =============================
-  // DELETE
-  // =============================
 
   deleteTask(taskId: number) {
     this.existId.set(taskId);
-    this.deleteLoading.set(true);
-
-    this.taskService.deleteTask(taskId)
-      .pipe(finalize(() => this.deleteLoading.set(false)))
-      .subscribe({
-        next: () => {
-          this.toast.success('Task Deleted Successfully');
-          this.getAllTasksByUserId();
-        },
-        error: () => {
-          this.toast.error(`Can't Delete This Task Please Try Later Again!`);
-        },
-      });
+    this.taskService.deleteTask(taskId).subscribe({
+      next: (res) => {
+        this.toast.success('Task Deleted Successfully');
+        this.getAllTasksByUserId();
+        this.deleteLoading.set(false);
+      },
+      error: (err) => {
+        this.toast.error(`Can't Delete This Task Please Try Later Again!`);
+        this.deleteLoading.set(false);
+      },
+    });
   }
-
-  // =============================
-  // UPDATE
-  // =============================
 
   setToUpdate(updateableId: number, item: any) {
     this.updateableId.set(updateableId);
-    this.updateTaskForm.patchValue({ ...item });
-    this.toggleModal(this.updateTaskModal, true);
+    (this.updateTaskModal.nativeElement as HTMLElement).classList.add('flex');
+    (this.updateTaskModal.nativeElement as HTMLElement).classList.remove('hidden');
+    this.updateTaskForm.patchValue({...item});
   }
 
   closeUpdateModel() {
-    this.toggleModal(this.updateTaskModal, false);
+    (this.updateTaskModal.nativeElement as HTMLElement).classList.remove('flex');
+    (this.updateTaskModal.nativeElement as HTMLElement).classList.add('hidden');
   }
 
-  updateTask() {
+   updateTask() {
     if (this.updateTaskForm.invalid) {
       this.updateTaskForm.markAllAsTouched();
       return;
     }
-
     this.updateLoading.set(true);
-
-    this.taskService.updateTask(this.updateableId(), { ...this.updateTaskForm.value })
-      .pipe(finalize(() => this.updateLoading.set(false)))
-      .subscribe({
-        next: () => {
-          this.toast.success('Task Update Successfully');
-          this.getAllTasksByUserId();
-          this.updateTaskForm = this.buildTaskForm();
-          this.closeUpdateModel();
-        },
-        error: () => {
-          this.toast.error(`Can't Update A Task`);
-        },
-      });
-  }
-
-  // =============================
-  // 🔹 Reusable Modal Handler
-  // =============================
-
-  private toggleModal(modal: ElementRef, open: boolean) {
-    const element = modal.nativeElement as HTMLElement;
-
-    if (open) {
-      element.classList.add('flex');
-      element.classList.remove('hidden');
-    } else {
-      element.classList.remove('flex');
-      element.classList.add('hidden');
-    }
+    this.taskService.updateTask(this.updateableId(),{...this.updateTaskForm.value}).subscribe({
+      next: (res) => {
+        this.toast.success('Task Update Successfully');
+        this.updateLoading.set(false);
+        this.getAllTasksByUserId();
+        this.updateTaskForm.reset();
+        this.closeUpdateModel();
+      },
+      error: (err) => {
+        this.toast.error(`Can't Update A Task`);
+        this.updateLoading.set(false);
+        this.updateTaskForm.reset();
+        this.closeUpdateModel();
+      },
+    });
   }
 }

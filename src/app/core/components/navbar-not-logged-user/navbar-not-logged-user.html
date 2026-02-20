@@ -11,10 +11,10 @@
 
       <!-- Links -->
       <div #linksContainer class="transition-all duration-500 flex left-[-1000%] right-0 p-4 md:static   md:p-0 absolute w-full z-50 top-full bg-gray-100 md:bg-transparent md:w-fit   md:flex md:flex-row flex-col md:items-center gap-8 font-medium text-slate-700">
-        <a href="#home" class="hover:text-slate-900 transition">Home</a>
-        <a href="#feature" class="hover:text-slate-900 transition">Features</a>
-        <a href="#benefit" class="hover:text-slate-900 transition">Benefits</a>
-        <a href="#about" class="hover:text-slate-900 transition">About</a>
+        <a [routerLink]="['/home']" fragment="home" class="hover:text-slate-900 transition">Home</a>
+        <a [routerLink]="['/home']" fragment="feature" class="hover:text-slate-900 transition">Features</a>
+        <a [routerLink]="['/home']" fragment="benefit" class="hover:text-slate-900 transition">Benefits</a>
+        <a [routerLink]="['/home']" fragment="about" class="hover:text-slate-900 transition">About</a>
         <div class="flex md:hidden items-center md:justify-center gap-2">
         <button  routerLink="/home/login" class="md:block hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold hover:opacity-90 transition duration-500">
         Login

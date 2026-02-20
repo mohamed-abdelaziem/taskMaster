@@ -1,78 +1,121 @@
-<div class="mb-6">
-  <h1 class="font-bold text-[30px] text-slate-900">
-    Dashboard Overview
-  </h1>
-</div>
+<div class="p-6 space-y-8">
 
-@if (dashboardLoading()) {
- <app-global-loading></app-global-loading>
-} @else {
+  <!-- ================= HEADER ================= -->
+  <div>
+    <h1 class="text-3xl font-bold text-slate-900">Dashboard Overview</h1>
+    <p class="text-slate-500 mt-1">Track your goals and tasks performance</p>
+  </div>
 
-  <div class="grid md:grid-cols-3 gap-6">
+  <!-- ================= STATS SECTION ================= -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
 
     <!-- Total Tasks -->
-    <div class="bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">Total Tasks</p>
-      <h2 class="text-3xl font-bold text-slate-900">
-        {{ dashboardStats()?.totalTasks }}
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition">
+      <p class="text-sm text-slate-500">Total Tasks</p>
+      <h2 class="text-3xl font-bold text-slate-900 mt-2">
+        {{ dashboardData().totalTasks }}
       </h2>
     </div>
 
     <!-- Completed Tasks -->
-    <div class="bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">Completed Tasks</p>
-      <h2 class="text-3xl font-bold text-green-600">
-        {{ dashboardStats()?.completedTasks }}
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition">
+      <p class="text-sm text-slate-500">Completed Tasks</p>
+      <h2 class="text-3xl font-bold text-green-600 mt-2">
+        {{ dashboardData().completedTasks }}
       </h2>
     </div>
 
     <!-- Active Goals -->
-    <div class="bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">Active Goals</p>
-      <h2 class="text-3xl font-bold text-slate-900">
-        {{ dashboardStats()?.activeGoals }}
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition">
+      <p class="text-sm text-slate-500">Active Goals</p>
+      <h2 class="text-3xl font-bold text-blue-600 mt-2">
+        {{ dashboardData().activeGoals }}
       </h2>
     </div>
 
     <!-- In Progress Goals -->
-    <div class="bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">In Progress Goals</p>
-      <h2 class="text-3xl font-bold text-yellow-500">
-        {{ dashboardStats()?.inProgressGoals }}
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition">
+      <p class="text-sm text-slate-500">In Progress Goals</p>
+      <h2 class="text-3xl font-bold text-purple-600 mt-2">
+        {{ dashboardData().inProgressGoals }}
       </h2>
     </div>
 
     <!-- Total Reminders -->
-    <div class="bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">Total Reminders</p>
-      <h2 class="text-3xl font-bold text-slate-900">
-        {{ dashboardStats()?.totalReminders }}
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition">
+      <p class="text-sm text-slate-500">Total Reminders</p>
+      <h2 class="text-3xl font-bold text-orange-600 mt-2">
+        {{ dashboardData().totalReminders }}
       </h2>
     </div>
 
     <!-- Upcoming Reminders -->
-    <div class="bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">Upcoming Reminders</p>
-      <h2 class="text-3xl font-bold text-blue-600">
-        {{ dashboardStats()?.upcomingReminders }}
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition">
+      <p class="text-sm text-slate-500">Upcoming Reminders</p>
+      <h2 class="text-3xl font-bold text-yellow-500 mt-2">
+        {{ dashboardData().upcomingReminders }}
       </h2>
-    </div>
-
-    <!-- Completion Rate -->
-    <div class="md:col-span-3 bg-white cursor-pointer rounded-2xl shadow-lg p-6 hover:-translate-y-1 transition duration-500">
-      <p class="text-slate-500 text-sm">Completion Rate</p>
-      <h2 class="text-4xl font-bold text-green-600">
-        {{ dashboardStats()?.completionRate }}
-      </h2>
-
-      <!-- Progress Bar -->
-      <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
-        <div
-          class="bg-green-600 h-4 rounded-full transition-all duration-500"
-          [style.width]="dashboardStats()?.completionRate"
-        ></div>
-      </div>
     </div>
 
   </div>
-}
+
+  <!-- ================= COMPLETION RATE ================= -->
+  <div class="bg-white p-6 rounded-2xl shadow-md">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-slate-900">
+        Completion Rate
+      </h3>
+      <span class="text-sm font-semibold text-slate-700">
+        {{ dashboardData().completionRate }}
+      </span>
+    </div>
+
+    <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden">
+      <div
+        class="bg-slate-900 h-4 transition-all duration-700"
+        [style.width]="dashboardData().completionRate"
+      ></div>
+    </div>
+  </div>
+
+  <!-- ================= RECENT ACTIVITY ================= -->
+  <div class="bg-white p-6 rounded-2xl shadow-md">
+    <h3 class="text-lg font-semibold text-slate-900 mb-6">
+      Recent Activity
+    </h3>
+
+    @if (recentActivity?.length === 0) {
+      <div class="text-center py-10 text-slate-500">
+        No recent activity found
+      </div>
+    } @else {
+      <div class="space-y-4">
+        @for (item of recentActivity; track $index) {
+
+          <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition">
+
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-900 text-white shrink-0">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+
+            <div class="flex-1">
+              <p class="font-medium text-slate-800">
+                {{ item.message }}
+              </p>
+              <p class="text-xs text-slate-500 mt-1">
+                {{ item.timestamp | date:'medium' }}
+              </p>
+            </div>
+
+            <span class="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold">
+              {{ item.type }}
+            </span>
+
+          </div>
+
+        }
+      </div>
+    }
+  </div>
+
+</div>

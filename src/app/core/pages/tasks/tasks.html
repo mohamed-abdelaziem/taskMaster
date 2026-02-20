@@ -33,7 +33,7 @@
         class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
         placeholder="Enter task name"
       />
-      @if (createTaskForm.get('taskName')?.errors && createTaskForm.get('taskName')?.touched) {
+      @if (createTaskForm.get('taskName')?.invalid && createTaskForm.get('taskName')?.touched) {
         @if (createTaskForm.get('taskName')?.getError('required')) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
@@ -73,7 +73,7 @@
         placeholder="Task description"
       ></textarea>
       @if (
-        createTaskForm.get('description')?.errors && createTaskForm.get('description')?.touched
+        createTaskForm.get('description')?.invalid && createTaskForm.get('description')?.touched
       ) {
         @if (createTaskForm.get('description')?.getError('required')) {
           <div
@@ -117,7 +117,7 @@
         <option value="Monthly">Monthly</option>
       </select>
 
-      @if (createTaskForm.get('frequency')?.errors && createTaskForm.get('frequency')?.touched) {
+      @if (createTaskForm.get('frequency')?.invalid && createTaskForm.get('frequency')?.touched) {
         @if (createTaskForm.get('frequency')?.getError('required')) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
@@ -154,7 +154,8 @@
         name="dueDate"
         class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
       />
-      @if (createTaskForm.get('dueDate')?.errors && createTaskForm.get('dueDate')?.touched) {
+      
+      @if (createTaskForm.get('dueDate')?.invalid && createTaskForm.get('dueDate')?.touched) {
         @if (createTaskForm.get('dueDate')?.getError('required')) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
@@ -171,7 +172,7 @@
         
       }
 
-      @if (createTaskForm.errors) {
+      @if (createTaskForm.invalid) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
           >
@@ -240,7 +241,6 @@
               <p class="text-sm text-slate-500">Task Name</p>
               <p class="font-semibold text-lg text-slate-900">{{ item?.taskName }}</p>
             </div>
-
             <div>
               <p class="text-sm text-slate-500">Frequency</p>
               <p class="font-semibold text-slate-800">
@@ -257,10 +257,7 @@
               </p>
             </div>
 
-            <!-- <div>
-      <p class="text-sm text-slate-500">Start Date</p>
-      <p class="text-slate-800">{{item?.}}</p>
-    </div> -->
+       
 
             <div>
               <p class="text-sm text-slate-500">Due Date</p>
@@ -276,9 +273,7 @@
               </p>
             </div>
 
-            <!-- <button (click)="logOut()"  class="md:block hover:bg-transparent border hover:border-slate-900 hover:text-slate-900 bg-slate-900 text-white px-6 py-2 cursor-pointer rounded-lg font-semibold hover:opacity-90 transition duration-500">
-        Log Out
-      </button> -->
+        
           </div>
           <div class="btns flex-wrap flex items-center gap-2">
             <button
@@ -328,7 +323,7 @@
         class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
         placeholder="Enter task name"
       />
-      @if (updateTaskForm.get('taskName')?.errors && updateTaskForm.get('taskName')?.touched) {
+      @if (updateTaskForm.get('taskName')?.invalid && updateTaskForm.get('taskName')?.touched) {
         @if (updateTaskForm.get('taskName')?.getError('required')) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
@@ -368,7 +363,7 @@
         placeholder="Task description"
       ></textarea>
       @if (
-        updateTaskForm.get('description')?.errors && updateTaskForm.get('description')?.touched
+        updateTaskForm.get('description')?.invalid && updateTaskForm.get('description')?.touched
       )
        {
         
@@ -414,7 +409,7 @@
         <option value="Monthly">Monthly</option>
       </select>
 
-      @if (updateTaskForm.get('frequency')?.errors && updateTaskForm.get('frequency')?.touched) {
+      @if (updateTaskForm.get('frequency')?.invalid && updateTaskForm.get('frequency')?.touched) {
         @if (updateTaskForm.get('frequency')?.getError('required')) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
@@ -451,7 +446,7 @@
         name="dueDate"
         class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:border-slate-900"
       />
-      @if (updateTaskForm.get('dueDate')?.errors && updateTaskForm.get('dueDate')?.touched) {
+      @if (updateTaskForm.get('dueDate')?.invalid && updateTaskForm.get('dueDate')?.touched) {
         @if (updateTaskForm.get('dueDate')?.getError('required')) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
@@ -468,7 +463,7 @@
        
       }
 
-       @if (updateTaskForm.errors) {
+       @if (updateTaskForm.invalid) {
           <div
             class="flex flex-wrap items-start gap-3 mt-1 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800"
           >

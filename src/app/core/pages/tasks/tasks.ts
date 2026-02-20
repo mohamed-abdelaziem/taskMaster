@@ -89,8 +89,9 @@ export class Tasks implements OnInit {
 
   createTask() {
     
-    if (this.createTaskForm.invalid) {
+    if (this.createTaskForm.errors) {
       this.createTaskForm.markAllAsTouched();
+      this.createTaskForm.updateValueAndValidity();
       return;
     }
     this.isLoadingCreateTask.set(true);
@@ -164,6 +165,7 @@ export class Tasks implements OnInit {
    updateTask() {
     if (this.updateTaskForm.invalid) {
       this.updateTaskForm.markAllAsTouched();
+      this.updateTaskForm.updateValueAndValidity();
       return;
     }
     this.updateLoading.set(true);

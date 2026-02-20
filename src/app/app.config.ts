@@ -7,7 +7,7 @@ import {provideToastr} from "ngx-toastr"
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withFetch()),
-    provideRouter(routes,withHashLocation()), 
+    provideRouter(routes), 
     provideClientHydration(withEventReplay()),
     provideToastr({timeOut:3000}),
     provideBrowserGlobalErrorListeners(),
